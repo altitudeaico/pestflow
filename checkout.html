@@ -630,14 +630,13 @@ function handleCheckout() {
   if (url && !url.includes('YOUR_')) {
     window.location.href = url;
   } else {
-    // Demo mode: show confirmation
+    // Demo mode: redirect to confirmation page
     const btn = document.getElementById('orderBtn');
-    btn.textContent = '✓ Demo mode — Stripe links coming soon';
+    btn.textContent = '✓ Processing...';
     btn.style.background = 'var(--green)';
-    setTimeout(() => {
-      btn.textContent = PLANS[currentPlan].btnText;
-      btn.style.background = '';
-    }, 2500);
+    setTimeout(function() {
+      window.location.href = 'confirmation.html?plan=' + plan + '&dfy=' + dfy;
+    }, 1200);
   }
 }
 
