@@ -212,6 +212,17 @@
 
   footer { padding: 36px 0; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--faint); }
 
+  /* VIDEO SECTION */
+  .video-section { background: linear-gradient(180deg, var(--bg) 0%, #0B0B16 50%, var(--bg) 100%); }
+  .video-wrap { max-width: 800px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 80px rgba(201,168,76,0.06); position: relative; background: #000; }
+  .video-wrap video { width: 100%; display: block; }
+  .video-play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); cursor: pointer; transition: background 0.3s; z-index: 2; }
+  .video-play-overlay:hover { background: rgba(0,0,0,0.25); }
+  .video-play-overlay.hidden { display: none; }
+  .play-btn-circle { width: 80px; height: 80px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 8px 30px rgba(201,168,76,0.3); }
+  .video-play-overlay:hover .play-btn-circle { transform: scale(1.08); box-shadow: 0 12px 40px rgba(201,168,76,0.4); }
+  .play-triangle { width: 0; height: 0; border-style: solid; border-width: 14px 0 14px 24px; border-color: transparent transparent transparent var(--bg); margin-left: 4px; }
+
   @media (max-width: 768px) {
     .prob-grid, .preview-grid, .dfy-box { grid-template-columns: 1fr; }
     .steps, .p-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
@@ -228,10 +239,11 @@
 <nav><div class="c">
   <a href="#" class="logo"><div class="logo-i">P</div><div class="logo-t">Pest<span>Flow</span></div></a>
   <div class="nav-links">
+    <a href="#video">Watch</a>
     <a href="#how">How it works</a>
     <a href="#demo">Demo</a>
     <a href="#pricing">Pricing</a>
-    <a href="#demo" class="btn btn-g">Try the demo →</a>
+    <a href="#video" class="btn btn-g">Watch how it works →</a>
   </div>
 </div></nav>
 
@@ -242,13 +254,37 @@
   <h1>Stop losing customers<br>to <em>silence</em></h1>
   <p class="hero-sub">PestFlow watches your customer list, spots who's overdue, and sends them a personalised reminder to rebook. Automatically.</p>
   <div class="hero-ctas">
-    <a href="#demo" class="btn btn-g btn-lg">Try the interactive demo →</a>
-    <a href="#how" class="btn btn-o btn-lg">See how it works</a>
+    <a href="#video" class="btn btn-g btn-lg">▶ Watch how it works (60 sec)</a>
+    <a href="#demo" class="btn btn-o btn-lg">Try the interactive demo</a>
   </div>
   <div class="hero-proof">
     <div class="hp-item"><div class="num">$29</div><div class="lbl">/month to start</div></div>
     <div class="hp-item"><div class="num">5 min</div><div class="lbl">to set up</div></div>
     <div class="hp-item"><div class="num">0</div><div class="lbl">contracts</div></div>
+  </div>
+</div>
+</section>
+
+<!-- VIDEO EXPLAINER -->
+<section id="video" class="video-section">
+<div class="c">
+  <div class="centered" style="margin-bottom: 32px;">
+    <div class="s-label">See it in action</div>
+    <div class="s-title">60 seconds. That's all you need.</div>
+    <div class="s-sub" style="margin-left:auto;margin-right:auto;">Watch how PestFlow automatically recovers customers you'd otherwise lose to silence.</div>
+  </div>
+  <div class="video-wrap">
+    <video id="explainerVideo" preload="metadata" playsinline>
+      <source src="Flow-Retention-Mar-1-18-52-55.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="video-play-overlay" id="videoOverlay" onclick="playVideo()">
+      <div class="play-btn-circle"><div class="play-triangle"></div></div>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 24px;">
+    <a href="#demo" class="btn btn-g btn-lg">Now try it yourself →</a>
+    <div style="margin-top: 10px;"><a href="#pricing" style="color: var(--dim); font-size: 13px;">or skip to pricing →</a></div>
   </div>
 </div>
 </section>
@@ -429,6 +465,21 @@
 <footer><div class="c"><p>© 2026 PestFlow. Built for pest control operators who are tired of losing customers to silence.</p></div></footer>
 
 <script>
+// ========== VIDEO PLAYER ==========
+function playVideo() {
+  const video = document.getElementById('explainerVideo');
+  const overlay = document.getElementById('videoOverlay');
+  overlay.classList.add('hidden');
+  video.play();
+}
+document.getElementById('explainerVideo').addEventListener('click', function() {
+  if (this.paused) { this.play(); }
+  else { this.pause(); }
+});
+document.getElementById('explainerVideo').addEventListener('ended', function() {
+  document.getElementById('videoOverlay').classList.remove('hidden');
+});
+
 // ========== INTERACTIVE DEMO ==========
 const CUSTOMERS = [
   { id:1, name:"Sarah Mitchell", addr:"742 Oak Ridge Dr", city:"Austin, TX", pest:"General Pest (Ants)", last:"Nov 15, 2025", freq:"Quarterly", status:"overdue", risk:"high", value:"$520/yr", phone:"(512) 555-0147", notes:"Has a dog — use pet-safe products. Prefers Tuesday mornings." },
