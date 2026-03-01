@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PestFlow — You're In!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08080F; --bg2: #0F0F1A; --bg3: #141425; --border: #1A1A2E;
+    --gold: #C9A84C; --gold-l: #E8D5A0; --gold-d: #8B7333; --gold-bg: rgba(201,168,76,0.08);
+    --green: #34C759; --green-d: #1B6B30; --green-bg: rgba(52,199,89,0.1);
+    --red: #E8644C; --red-bg: rgba(232,100,76,0.1);
+    --orange: #FF9F0A; --orange-bg: rgba(255,159,10,0.1);
+    --text: #E0E0E0; --dim: #888; --faint: #555; --white: #FFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .c { max-width: 680px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  nav { padding: 16px 0; border-bottom: 1px solid var(--border); background: rgba(8,8,15,0.92); backdrop-filter: blur(20px); }
+  nav .c { display: flex; justify-content: space-between; align-items: center; max-width: 680px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-i { width: 34px; height: 34px; background: linear-gradient(135deg, var(--gold), var(--gold-d)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800; color: var(--bg); }
+  .logo-t { font-size: 19px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+  .logo-t span { color: var(--gold); }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .btn { padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; transition: all 0.25s; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-g { background: var(--gold); color: var(--bg); }
+  .btn-g:hover { background: var(--gold-l); transform: translateY(-1px); box-shadow: 0 8px 25px rgba(201,168,76,0.2); }
+  .btn-o { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-o:hover { border-color: var(--dim); background: var(--bg2); }
+  .btn-lg { padding: 16px 36px; font-size: 16px; border-radius: 10px; width: 100%; }
+  .btn-orange { background: var(--orange); color: var(--bg); }
+  .btn-orange:hover { background: #FFB340; transform: translateY(-1px); box-shadow: 0 8px 25px rgba(255,159,10,0.25); }
+
+  /* CONFIRMATION */
+  .conf { padding: 60px 0 40px; text-align: center; }
+  .conf-check { width: 72px; height: 72px; border-radius: 50%; background: var(--green-bg); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 36px; animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .conf h1 { font-size: 32px; font-weight: 800; color: var(--white); letter-spacing: -1px; margin-bottom: 8px; }
+  .conf .sub { font-size: 16px; color: var(--dim); max-width: 480px; margin: 0 auto; }
+
+  /* ORDER SUMMARY */
+  .summary { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 28px; }
+  .summary h3 { font-size: 14px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+  .sum-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; border-bottom: 1px solid #151520; }
+  .sum-row:last-of-type { border-bottom: none; }
+  .sum-row .sl { color: var(--dim); }
+  .sum-row .sv { color: var(--white); font-weight: 600; }
+  .sum-divider { border-top: 1px solid var(--border); margin: 10px 0; }
+  .sum-total { display: flex; justify-content: space-between; padding: 10px 0; }
+  .sum-total .sl { font-size: 16px; font-weight: 700; color: var(--white); }
+  .sum-total .sv { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; color: var(--gold); }
+
+  /* DFY UPSELL */
+  .upsell { background: linear-gradient(135deg, rgba(255,159,10,0.08) 0%, rgba(255,159,10,0.02) 100%); border: 1px solid rgba(255,159,10,0.3); border-radius: 14px; padding: 28px; margin-bottom: 28px; position: relative; overflow: hidden; }
+  .upsell::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(255,159,10,0.12) 0%, transparent 70%); }
+  .upsell-urgency { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; background: var(--red-bg); font-size: 12px; font-weight: 700; color: var(--red); margin-bottom: 14px; }
+  .upsell-urgency .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .upsell h3 { font-size: 22px; font-weight: 800; color: var(--white); margin-bottom: 6px; letter-spacing: -0.5px; }
+  .upsell .upsell-sub { font-size: 15px; color: var(--dim); margin-bottom: 16px; line-height: 1.5; }
+  .upsell-benefits { list-style: none; margin-bottom: 20px; }
+  .upsell-benefits li { padding: 6px 0; font-size: 14px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .upsell-benefits li::before { content: '✓'; color: var(--green); font-weight: 700; }
+  .upsell-price-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding: 14px; background: rgba(0,0,0,0.2); border-radius: 10px; }
+  .upsell-price-row .upr-left { font-size: 14px; color: var(--dim); }
+  .upsell-price-row .upr-right { display: flex; align-items: baseline; gap: 4px; }
+  .upsell-price-row .upr-right .big { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 800; color: var(--orange); }
+  .upsell-price-row .upr-right .once { font-size: 13px; color: var(--dim); }
+  .upsell-countdown { text-align: center; margin-bottom: 16px; }
+  .upsell-countdown .slots { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 800; color: var(--red); }
+  .upsell-countdown .slots-label { font-size: 13px; color: var(--dim); }
+  .upsell-timer { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--orange); margin-top: 4px; }
+  .upsell-skip { text-align: center; margin-top: 12px; }
+  .upsell-skip a { color: var(--faint); font-size: 13px; text-decoration: none; }
+  .upsell-skip a:hover { color: var(--dim); text-decoration: underline; }
+
+  /* DFY CONFIRMED */
+  .dfy-confirmed { background: var(--bg2); border: 1px solid var(--green-d); border-radius: 14px; padding: 28px; margin-bottom: 28px; text-align: center; }
+  .dfy-confirmed .dfy-icon { font-size: 32px; margin-bottom: 10px; }
+  .dfy-confirmed h3 { font-size: 20px; font-weight: 800; color: var(--green); margin-bottom: 6px; }
+  .dfy-confirmed p { font-size: 14px; color: var(--dim); max-width: 440px; margin: 0 auto; }
+  .dfy-timeline { margin-top: 20px; text-align: left; max-width: 360px; margin-left: auto; margin-right: auto; }
+  .dfy-timeline-item { display: flex; gap: 12px; padding: 10px 0; }
+  .dfy-timeline-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; }
+  .dfy-timeline-dot.done { background: var(--green-bg); color: var(--green); }
+  .dfy-timeline-dot.next { background: var(--gold-bg); color: var(--gold); }
+  .dfy-timeline-dot.wait { background: rgba(255,255,255,0.05); color: var(--faint); }
+  .dfy-timeline-text { font-size: 13px; color: var(--dim); }
+  .dfy-timeline-text strong { color: var(--white); }
+
+  /* NEXT STEPS */
+  .next-steps { margin-bottom: 28px; }
+  .next-steps h3 { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 16px; }
+  .ns { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; transition: border-color 0.2s; }
+  .ns:hover { border-color: #252538; }
+  .ns-num { width: 28px; height: 28px; border-radius: 50%; background: var(--gold-bg); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+  .ns-text { flex: 1; }
+  .ns-title { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+  .ns-desc { font-size: 13px; color: var(--dim); }
+  .ns-link { color: var(--gold); text-decoration: none; font-size: 13px; font-weight: 600; }
+  .ns-link:hover { text-decoration: underline; }
+
+  /* HELP */
+  .help-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 24px; text-align: center; margin-bottom: 40px; }
+  .help-box p { font-size: 14px; color: var(--dim); margin-bottom: 8px; }
+  .help-box a { color: var(--gold); text-decoration: none; font-weight: 600; }
+  .help-box a:hover { text-decoration: underline; }
+
+  footer { padding: 36px 0; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--faint); }
+
+  @media (max-width: 768px) {
+    .conf h1 { font-size: 26px; }
+    .upsell-price-row { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav><div class="c">
+  <a href="index.html" class="logo"><div class="logo-i">P</div><div class="logo-t">Pest<span>Flow</span></div></a>
+</div></nav>
+
+<!-- CONFIRMATION HEADER -->
+<div class="conf">
+  <div class="c">
+    <div class="conf-check" id="confIcon">✓</div>
+    <h1 id="confTitle">You're in. Welcome to PestFlow.</h1>
+    <p class="sub" id="confSub">Your payment was successful. We've sent a confirmation and your login details to your email.</p>
+  </div>
+</div>
+
+<div class="c">
+
+  <!-- ORDER SUMMARY -->
+  <div class="summary" id="orderSummary">
+    <h3>Order summary</h3>
+    <div id="sumLines"></div>
+    <div class="sum-divider"></div>
+    <div class="sum-total">
+      <span class="sl">Total paid</span>
+      <span class="sv" id="sumTotal">$79</span>
+    </div>
+  </div>
+
+  <!-- DFY UPSELL (shown if they did NOT buy DFY) -->
+  <div class="upsell" id="upsellBlock" style="display:none;">
+    <div class="upsell-urgency"><span class="pulse-dot"></span> Limited availability this week</div>
+    <h3 id="upsellTitle">Want to be live by tomorrow?</h3>
+    <p class="upsell-sub" id="upsellSub">You've got the tool. Now let us do the hard part. Send us your customer list — messy spreadsheet, notebook photo, anything — and we'll have PestFlow fully configured and sending reminders within 24 hours.</p>
+
+    <ul class="upsell-benefits">
+      <li>We import and clean your entire customer list</li>
+      <li>Configure personalised reminder schedules</li>
+      <li>Test SMS delivery to make sure everything works</li>
+      <li>Hand you a fully working system — you do nothing</li>
+    </ul>
+
+    <div class="upsell-price-row">
+      <div class="upr-left">Done-For-You Setup</div>
+      <div class="upr-right">
+        <span class="big">$149</span>
+        <span class="once">one-time</span>
+      </div>
+    </div>
+
+    <div class="upsell-countdown">
+      <div class="slots" id="slotsLeft">3</div>
+      <div class="slots-label">setup slots remaining this week</div>
+      <div class="upsell-timer" id="upsellTimer">Offer expires in 14:59</div>
+    </div>
+
+    <button class="btn btn-orange btn-lg" onclick="claimDFY()">Add Done-For-You Setup — $149 →</button>
+    <div class="upsell-skip"><a href="#" onclick="skipUpsell(); return false;">No thanks, I'll set it up myself</a></div>
+  </div>
+
+  <!-- DFY CONFIRMED (shown if they DID buy DFY) -->
+  <div class="dfy-confirmed" id="dfyConfirmed" style="display:none;">
+    <div class="dfy-icon">🛠️</div>
+    <h3>Done-For-You Setup — We're on it.</h3>
+    <p>Our team has been notified. We'll reach out within the next 2 hours to collect your customer list. You'll be fully live within 24 hours.</p>
+    <div class="dfy-timeline">
+      <div class="dfy-timeline-item">
+        <div class="dfy-timeline-dot done">✓</div>
+        <div class="dfy-timeline-text"><strong>Payment confirmed</strong> — just now</div>
+      </div>
+      <div class="dfy-timeline-item">
+        <div class="dfy-timeline-dot next">2</div>
+        <div class="dfy-timeline-text"><strong>We'll email you</strong> to collect your customer list — within 2 hours</div>
+      </div>
+      <div class="dfy-timeline-item">
+        <div class="dfy-timeline-dot wait">3</div>
+        <div class="dfy-timeline-text"><strong>Import & configure</strong> — we set everything up for you</div>
+      </div>
+      <div class="dfy-timeline-item">
+        <div class="dfy-timeline-dot wait">4</div>
+        <div class="dfy-timeline-text"><strong>You're live</strong> — you'll get a "you're ready" email within 24 hours</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEXT STEPS (self-serve, shown if no DFY) -->
+  <div class="next-steps" id="selfServeSteps" style="display:none;">
+    <h3>Get started in 3 steps</h3>
+    <div class="ns">
+      <div class="ns-num">1</div>
+      <div class="ns-text">
+        <div class="ns-title">Check your email</div>
+        <div class="ns-desc">We've sent your login details. Click the link to access your PestFlow dashboard.</div>
+      </div>
+    </div>
+    <div class="ns">
+      <div class="ns-num">2</div>
+      <div class="ns-text">
+        <div class="ns-title">Add your customers</div>
+        <div class="ns-desc">Type them in or paste from a spreadsheet. Name, address, last service date — that's all PestFlow needs. Takes about 5 minutes for 50 customers.</div>
+      </div>
+    </div>
+    <div class="ns">
+      <div class="ns-num">3</div>
+      <div class="ns-text">
+        <div class="ns-title">Send your first reminder</div>
+        <div class="ns-desc">Click any overdue customer, hit "Generate Reminder", and watch PestFlow write a personalised message. Hit send. That's it — you've recovered your first customer.</div>
+      </div>
+    </div>
+    <div style="margin-top: 16px;">
+      <a href="#" class="btn btn-g btn-lg">Go to your dashboard →</a>
+    </div>
+  </div>
+
+  <!-- NEXT STEPS (DFY, shown if they have DFY) -->
+  <div class="next-steps" id="dfySteps" style="display:none;">
+    <h3>What happens next</h3>
+    <div class="ns">
+      <div class="ns-num">1</div>
+      <div class="ns-text">
+        <div class="ns-title">Check your email</div>
+        <div class="ns-desc">We've sent your login details and a welcome message. Our setup team has been notified.</div>
+      </div>
+    </div>
+    <div class="ns">
+      <div class="ns-num">2</div>
+      <div class="ns-text">
+        <div class="ns-title">Reply with your customer list</div>
+        <div class="ns-desc">We'll email you within 2 hours. Just reply with your customer list in any format — spreadsheet, photo of a notebook, CSV, whatever you've got.</div>
+      </div>
+    </div>
+    <div class="ns">
+      <div class="ns-num">3</div>
+      <div class="ns-text">
+        <div class="ns-title">We handle everything</div>
+        <div class="ns-desc">We import your data, configure your reminders, test delivery, and hand you a fully working system. You'll get a "you're live" email within 24 hours.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HELP -->
+  <div class="help-box">
+    <p>Questions? Need help? We're here.</p>
+    <a href="mailto:support@pestflow.com">support@pestflow.com</a>
+  </div>
+
+</div>
+
+<footer><div class="c"><p>© 2026 PestFlow. Built for pest control operators who are tired of losing customers to silence.</p></div></footer>
+
+<script>
+// ========== PLAN DATA ==========
+const PLAN_INFO = {
+  lifetime: { name: 'Lifetime Deal', price: 199, recurring: false, label: 'one-time' },
+  starter:  { name: 'Starter Plan', price: 29, recurring: true, label: '/month' },
+  growth:   { name: 'Growth Plan', price: 79, recurring: true, label: '/month' },
+  pro:      { name: 'Pro Plan', price: 149, recurring: true, label: '/month' },
+};
+
+let hasDFY = false;
+let currentPlan = 'growth';
+
+function init() {
+  const params = new URLSearchParams(window.location.search);
+  currentPlan = params.get('plan') || 'growth';
+  hasDFY = params.get('dfy') === 'true';
+
+  if (!PLAN_INFO[currentPlan]) currentPlan = 'growth';
+  const plan = PLAN_INFO[currentPlan];
+
+  // Confirmation header
+  if (currentPlan === 'lifetime') {
+    document.getElementById('confTitle').textContent = "Welcome to the founding team.";
+    document.getElementById('confSub').textContent = "You've locked in lifetime access to PestFlow. No monthly fees, ever. We've sent your login details to your email.";
+    document.getElementById('confIcon').textContent = '🔥';
+  }
+
+  // Order summary
+  let lines = '';
+  lines += `<div class="sum-row"><span class="sl">${plan.name}</span><span class="sv">$${plan.price}${plan.recurring ? plan.label : ''}</span></div>`;
+  let total = plan.price;
+  if (hasDFY) {
+    lines += `<div class="sum-row"><span class="sl">Done-For-You Setup</span><span class="sv">$149</span></div>`;
+    total += 149;
+  }
+  document.getElementById('sumLines').innerHTML = lines;
+  document.getElementById('sumTotal').textContent = '$' + total;
+
+  // Show appropriate sections
+  if (hasDFY) {
+    document.getElementById('dfyConfirmed').style.display = 'block';
+    document.getElementById('dfySteps').style.display = 'block';
+    document.getElementById('upsellBlock').style.display = 'none';
+    document.getElementById('selfServeSteps').style.display = 'none';
+  } else {
+    document.getElementById('upsellBlock').style.display = 'block';
+    document.getElementById('selfServeSteps').style.display = 'block';
+    document.getElementById('dfyConfirmed').style.display = 'none';
+    document.getElementById('dfySteps').style.display = 'none';
+    startCountdown();
+    randomizeSlots();
+  }
+
+  // Customise upsell copy based on plan
+  if (currentPlan === 'lifetime') {
+    document.getElementById('upsellTitle').textContent = "You just saved hundreds. Now let us get you live.";
+    document.getElementById('upsellSub').textContent = "You've locked in the best deal in PestFlow history. Don't let your account sit idle — for $149, our team will import your customers and have you recovering revenue by tomorrow morning.";
+  }
+}
+
+// ========== COUNTDOWN TIMER ==========
+function startCountdown() {
+  let seconds = 15 * 60; // 15 minutes
+  const el = document.getElementById('upsellTimer');
+  setInterval(function() {
+    if (seconds <= 0) return;
+    seconds--;
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    el.textContent = 'Offer expires in ' + m + ':' + (s < 10 ? '0' : '') + s;
+    if (seconds <= 0) {
+      el.textContent = 'Offer expired';
+      el.style.color = 'var(--red)';
+    }
+  }, 1000);
+}
+
+// ========== RANDOMIZE SLOTS ==========
+function randomizeSlots() {
+  const slots = [2, 3, 3, 4][Math.floor(Math.random() * 4)];
+  document.getElementById('slotsLeft').textContent = slots;
+}
+
+// ========== CLAIM DFY ==========
+function claimDFY() {
+  // TODO: Replace with actual Stripe Payment Link for DFY add-on
+  const btn = event.target;
+  btn.textContent = '✓ Added! Redirecting to payment...';
+  btn.style.background = 'var(--green)';
+  
+  // In production, redirect to Stripe
+  setTimeout(function() {
+    // window.location.href = 'https://buy.stripe.com/YOUR_DFY_ADDON_LINK';
+    
+    // Demo mode: show DFY confirmed state
+    hasDFY = true;
+    document.getElementById('upsellBlock').style.display = 'none';
+    document.getElementById('dfyConfirmed').style.display = 'block';
+    document.getElementById('selfServeSteps').style.display = 'none';
+    document.getElementById('dfySteps').style.display = 'block';
+    
+    // Update order summary
+    const plan = PLAN_INFO[currentPlan];
+    let lines = `<div class="sum-row"><span class="sl">${plan.name}</span><span class="sv">$${plan.price}${plan.recurring ? plan.label : ''}</span></div>`;
+    lines += `<div class="sum-row"><span class="sl">Done-For-You Setup</span><span class="sv">$149</span></div>`;
+    document.getElementById('sumLines').innerHTML = lines;
+    document.getElementById('sumTotal').textContent = '$' + (plan.price + 149);
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 1500);
+}
+
+// ========== SKIP UPSELL ==========
+function skipUpsell() {
+  const upsell = document.getElementById('upsellBlock');
+  upsell.style.transition = 'all 0.4s';
+  upsell.style.opacity = '0';
+  upsell.style.transform = 'translateY(-10px)';
+  setTimeout(function() {
+    upsell.style.display = 'none';
+  }, 400);
+}
+
+init();
+</script>
+</body>
+</html>
