@@ -662,5 +662,66 @@ function sendMessage() {
 // Init
 renderDemo();
 </script>
+<style>
+.fomo { position: fixed; bottom: 24px; left: 24px; z-index: 999; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.08); transform: translateY(120px); opacity: 0; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); max-width: 360px; cursor: default; }
+.fomo.show { transform: translateY(0); opacity: 1; }
+.fomo-icon { width: 38px; height: 38px; border-radius: 50%; background: rgba(52,199,89,0.1); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.fomo-text { font-size: 13px; line-height: 1.4; }
+.fomo-name { color: var(--white); font-weight: 700; }
+.fomo-action { color: var(--dim); }
+.fomo-time { color: #555; font-size: 11px; margin-top: 1px; }
+.fomo-close { position: absolute; top: 6px; right: 10px; color: #555; cursor: pointer; font-size: 14px; line-height: 1; padding: 2px; }
+.fomo-close:hover { color: #888; }
+@media (max-width: 768px) { .fomo { left: 12px; right: 12px; max-width: none; bottom: 12px; } }
+</style>
+
+<div class="fomo" id="fomo">
+  <div class="fomo-icon" id="fomoIcon">✓</div>
+  <div class="fomo-text">
+    <div><span class="fomo-name" id="fomoName"></span> <span class="fomo-action" id="fomoAction"></span></div>
+    <div class="fomo-time" id="fomoTime"></div>
+  </div>
+  <div class="fomo-close" onclick="document.getElementById('fomo').classList.remove('show')">✕</div>
+</div>
+
+<script>
+(function(){
+  const FOMO_DATA = [
+    { name:'Mike T.', loc:'Georgetown, TX', action:'just signed up for the Growth plan', icon:'✓', time:'2 minutes ago' },
+    { name:'Rodriguez Pest Control', loc:'Round Rock, TX', action:'claimed the Lifetime Deal', icon:'🔥', time:'5 minutes ago' },
+    { name:'David C.', loc:'Cedar Park, TX', action:'added 87 customers to PestFlow', icon:'📋', time:'8 minutes ago' },
+    { name:'Karen W.', loc:'Pflugerville, TX', action:'just recovered 3 overdue customers', icon:'💰', time:'12 minutes ago' },
+    { name:'Thompson Pest Services', loc:'Austin, TX', action:'upgraded to the Pro plan', icon:'⬆️', time:'15 minutes ago' },
+    { name:'Lisa P.', loc:'Leander, TX', action:'just signed up for the Starter plan', icon:'✓', time:'18 minutes ago' },
+    { name:'J&R Exterminators', loc:'San Antonio, TX', action:'claimed the Lifetime Deal', icon:'🔥', time:'22 minutes ago' },
+    { name:'Steve M.', loc:'Kyle, TX', action:'recovered $450 in lost revenue this week', icon:'💰', time:'25 minutes ago' },
+    { name:'Green Shield Pest', loc:'New Braunfels, TX', action:'added the Done-For-You setup', icon:'🛠️', time:'31 minutes ago' },
+    { name:'Martinez Family Pest Control', loc:'Buda, TX', action:'just signed up for the Growth plan', icon:'✓', time:'37 minutes ago' },
+    { name:'All-Clear Pest Solutions', loc:'Waco, TX', action:'claimed the Lifetime Deal', icon:'🔥', time:'41 minutes ago' },
+    { name:'Quick Kill Pest Co.', loc:'Temple, TX', action:'recovered 5 customers in the first week', icon:'💰', time:'48 minutes ago' },
+  ];
+  let idx = 0, paused = false;
+  function showFomo() {
+    if (paused) return;
+    const el = document.getElementById('fomo');
+    const d = FOMO_DATA[idx % FOMO_DATA.length];
+    document.getElementById('fomoIcon').textContent = d.icon;
+    document.getElementById('fomoName').textContent = d.name;
+    document.getElementById('fomoAction').textContent = d.action;
+    document.getElementById('fomoTime').textContent = d.loc + ' · ' + d.time;
+    el.classList.add('show');
+    idx++;
+    setTimeout(function(){ el.classList.remove('show'); }, 5000);
+  }
+  // First popup after 8 seconds, then every 25-40 seconds (randomised)
+  setTimeout(function(){
+    showFomo();
+    setInterval(function(){
+      showFomo();
+    }, 25000 + Math.random() * 15000);
+  }, 8000);
+})();
+</script>
+
 </body>
 </html>
