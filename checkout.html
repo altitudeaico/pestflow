@@ -611,17 +611,16 @@ function handleCheckout() {
   const dfy = document.getElementById('dfyCheck').checked;
   const plan = currentPlan;
 
-  // Placeholder — replace these with your Stripe Payment Links
-  const STRIPE_LINKS = {
-    lifetime: 'https://buy.stripe.com/YOUR_LIFETIME_LINK',
-    starter: 'https://buy.stripe.com/YOUR_STARTER_LINK',
-    growth: 'https://buy.stripe.com/YOUR_GROWTH_LINK',
-    pro: 'https://buy.stripe.com/YOUR_PRO_LINK',
-    // DFY variants
-    'lifetime_dfy': 'https://buy.stripe.com/YOUR_LIFETIME_DFY_LINK',
-    'starter_dfy': 'https://buy.stripe.com/YOUR_STARTER_DFY_LINK',
-    'growth_dfy': 'https://buy.stripe.com/YOUR_GROWTH_DFY_LINK',
-    'pro_dfy': 'https://buy.stripe.com/YOUR_PRO_DFY_LINK',
+  // Stripe Links
+const STRIPE_LINKS = {
+    lifetime: 'https://buy.stripe.com/6oUfZh8d17Tlb9deZu3ks00',
+    starter: 'https://buy.stripe.com/14AeVdbpd0qTa593gM3ks04',
+    growth: 'https://buy.stripe.com/28E6oH50P3D59153gM3ks03',
+    pro: 'https://buy.stripe.com/4gMaEXfFtb5xa5918E3ks02',
+    'lifetime_dfy': 'https://buy.stripe.com/6oUfZh8d17Tlb9deZu3ks00',
+    'starter_dfy': 'https://buy.stripe.com/14AeVdbpd0qTa593gM3ks04',
+    'growth_dfy': 'https://buy.stripe.com/28E6oH50P3D59153gM3ks03',
+    'pro_dfy': 'https://buy.stripe.com/4gMaEXfFtb5xa5918E3ks02',
   };
 
   const key = dfy ? plan + '_dfy' : plan;
